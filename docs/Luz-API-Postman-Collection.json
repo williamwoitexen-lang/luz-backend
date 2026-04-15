@@ -1,0 +1,801 @@
+{
+  "info": {
+    "_postman_id": "luz-backend-api",
+    "name": "Luz - Backend API",
+    "description": "Coleção de endpoints da API Backend - Platform de Gestão de Conhecimento com IA\n\nVersão: 1.0.0\nÚltima atualização: 20/03/2026\n\n## Setup Inicial\n\n1. Importar esta collection no Postman\n2. Criar environment com variáveis:\n   - baseUrl: http://localhost:8000/api/v1\n   - token: (será preenchido após login)\n   - temp_id: (será preenchido após ingest-preview)\n\n## Autenticação\n\nEndpoints que requerem autenticação devem ter o JWT token em cookie ou header.\n\n## Documentação\n\nhttps://seu-repo/docs\n\n## Suporte\n\nVer TROUBLESHOOTING.md para problemas comuns",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "description": "Endpoints de autenticação com Azure Entra ID",
+      "item": [
+        {
+          "name": "Login (Azure AD)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["login"]
+            },
+            "description": "Redireciona para Azure AD para autenticação. Após login bem-sucedido, retorna com JWT em cookie."
+          },
+          "response": []
+        },
+        {
+          "name": "Check Auth Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "status"]
+            },
+            "description": "Verifica se usuário está autenticado"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Role",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/me/role",
+              "host": ["{{baseUrl}}"],
+              "path": ["me", "role"]
+            },
+            "description": "Retorna role do usuário autenticado"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["logout"]
+            },
+            "description": "Faz logout de forma segura removendo JWT"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Master Data - Locations",
+      "description": "Endpoints para dados mestres de localizações (somente leitura)",
+      "item": [
+        {
+          "name": "Get All Locations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/master-data/locations",
+              "host": ["{{baseUrl}}"],
+              "path": ["master-data", "locations"]
+            },
+            "description": "Retorna todas as localizações"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Locations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/master-data/locations?active_only=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["master-data", "locations"],
+              "query": [
+                {
+                  "key": "active_only",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Retorna apenas localizações ativas"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Locations by Country",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/master-data/locations?country_name=Brazil&active_only=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["master-data", "locations"],
+              "query": [
+                {
+                  "key": "country_name",
+                  "value": "Brazil"
+                },
+                {
+                  "key": "active_only",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Retorna localizações de um país específico"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Countries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/master-data/countries",
+              "host": ["{{baseUrl}}"],
+              "path": ["master-data", "countries"]
+            },
+            "description": "Lista todos os países disponíveis"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Regions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/master-data/regions",
+              "host": ["{{baseUrl}}"],
+              "path": ["master-data", "regions"]
+            },
+            "description": "Lista todas as regiões (LATAM, NA, etc)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cities by Country",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/master-data/cities-by-country/Brazil",
+              "host": ["{{baseUrl}}"],
+              "path": ["master-data", "cities-by-country", "Brazil"]
+            },
+            "description": "Lista cidades de um país"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Location Hierarchy",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/master-data/hierarchy",
+              "host": ["{{baseUrl}}"],
+              "path": ["master-data", "hierarchy"]
+            },
+            "description": "Retorna hierarquia completa: Região → País → Estado → Cidade"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Master Data - Roles & Categories",
+      "description": "Endpoints para cargos e categorias (somente leitura)",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/master-data/roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["master-data", "roles"]
+            },
+            "description": "Retorna todos os cargos disponíveis"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Role by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/master-data/roles/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["master-data", "roles", "1"]
+            },
+            "description": "Retorna informações de um cargo específico"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/master-data/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["master-data", "categories"]
+            },
+            "description": "Retorna todas as categorias de documentos"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/master-data/categories/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["master-data", "categories", "1"]
+            },
+            "description": "Retorna informações de uma categoria específica"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Documents - Ingestion",
+      "description": "Endpoints para ingestão de documentos (upload, preview, confirm)",
+      "item": [
+        {
+          "name": "1. Preview - Extract Metadata",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/ingest-preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "ingest-preview"]
+            },
+            "description": "Etapa 1: Upload arquivo para preview\n\nO backend:\n1. Salva arquivo em storage/temp/{temp_id}/\n2. Extrai texto\n3. Chama LLM para sugerir metadados\n4. Retorna temp_id + sugestões\n\nArquivo expira em 10 minutos se não confirmar."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Confirm - Finalize Ingestion",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "user_id",
+                  "value": "alice",
+                  "type": "text"
+                },
+                {
+                  "key": "allowed_countries",
+                  "value": "[\"BR\", \"US\"]",
+                  "type": "text",
+                  "description": "JSON array ou comma-separated"
+                },
+                {
+                  "key": "allowed_cities",
+                  "value": "[\"SP\", \"RJ\"]",
+                  "type": "text"
+                },
+                {
+                  "key": "category_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "title",
+                  "value": "Policy Document",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/ingest-confirm/:temp_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "ingest-confirm", ":temp_id"],
+              "variable": [
+                {
+                  "key": "temp_id",
+                  "value": "550e8400-e29b-41d4"
+                }
+              ]
+            },
+            "description": "Etapa 2: Confirmar ingestão\n\nSubstituir :temp_id com valor do preview\n\nO backend:\n1. Recupera arquivo do temp\n2. Valida metadados\n3. Chama LLM para indexar\n4. Salva em SQL Server\n5. Move arquivo para permanente\n6. Deleta temp\n\nResultado: Documento pronto para busca"
+          },
+          "response": []
+        },
+        {
+          "name": "Direct Ingest (em 1 etapa)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "user_id",
+                  "value": "alice",
+                  "type": "text"
+                },
+                {
+                  "key": "allowed_countries",
+                  "value": "BR,US",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/ingest",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "ingest"]
+            },
+            "description": "Ingerir documento em uma única etapa (sem preview)\n\nAlternativa rápida ao fluxo 2-step"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Documents - Manage",
+      "description": "Endpoints para gerenciar documentos (listar, deletar, atualizar)",
+      "item": [
+        {
+          "name": "List Documents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents?limit=10&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                },
+                {
+                  "key": "category_id",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "active_only",
+                  "value": "true",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Listar documentos com paginação e filtros"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Document Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/:document_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", ":document_id"],
+              "variable": [
+                {
+                  "key": "document_id",
+                  "value": "550e8400-e29b-41d4-a716-446655440000"
+                }
+              ]
+            },
+            "description": "Retorna detalhes completos de um documento"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Document",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/:document_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", ":document_id"],
+              "variable": [
+                {
+                  "key": "document_id",
+                  "value": "550e8400-e29b-41d4-a716-446655440000"
+                }
+              ]
+            },
+            "description": "Deletar documento (remove do SQL e do LLM index)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Document Versions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/:document_id/versions",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", ":document_id", "versions"],
+              "variable": [
+                {
+                  "key": "document_id",
+                  "value": "550e8400-e29b-41d4-a716-446655440000"
+                }
+              ]
+            },
+            "description": "Retorna histórico de versões do documento"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Chat",
+      "description": "Endpoints para chat com LLM",
+      "item": [
+        {
+          "name": "Ask Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"chat_id\": \"session_abc123\",\n  \"user_id\": \"alice\",\n  \"name\": \"Alice Silva\",\n  \"email\": \"alice@company.com\",\n  \"country\": \"Brazil\",\n  \"city\": \"São Paulo\",\n  \"roles\": [\"Employee\"],\n  \"department\": \"TI\",\n  \"job_title\": \"Analista\",\n  \"collar\": \"white\",\n  \"unit\": \"Engineering\",\n  \"question\": \"Quais são os benefícios de saúde disponíveis?\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat/question",
+              "host": ["{{baseUrl}}"],
+              "path": ["chat", "question"]
+            },
+            "description": "Fazer pergunta e obter resposta do LLM\n\nO backend:\n1. Busca documentos relevantes\n2. Filtra por role/país/cidade do usuário\n3. Envia para LLM Server com contexto\n4. Retorna resposta + fontes\n5. Salva conversa no banco"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Conversations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/chat/conversations/:user_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["chat", "conversations", ":user_id"],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": "alice"
+                }
+              ]
+            },
+            "description": "Listar todas as conversas de um usuário"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Conversation History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/chat/conversations/:conversation_id/messages",
+              "host": ["{{baseUrl}}"],
+              "path": ["chat", "conversations", ":conversation_id", "messages"],
+              "variable": [
+                {
+                  "key": "conversation_id",
+                  "value": "conv_550e8400-e29b-41d4"
+                }
+              ]
+            },
+            "description": "Retorna mensagens de uma conversa específica"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "description": "Endpoints administrativos (requer role admin)",
+      "item": [
+        {
+          "name": "List Admins",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/admins",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "admins"]
+            },
+            "description": "Listar todos os admins (apenas para admins)"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"bob@company.com\",\n  \"email\": \"bob@company.com\",\n  \"name\": \"Bob\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/admins",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "admins"]
+            },
+            "description": "Adicionar novo admin"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Audit Log",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/audit?limit=50&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "audit"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Ver log de auditoria (quem fez o quê e quando)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dashboard Analytics",
+      "description": "Endpoints para análise e relatórios",
+      "item": [
+        {
+          "name": "Get Summary Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/chat/dashboard/summary?start_date=2026-02-20&end_date=2026-03-20",
+              "host": ["{{baseUrl}}"],
+              "path": ["chat", "dashboard", "summary"],
+              "query": [
+                {
+                  "key": "start_date",
+                  "value": "2026-02-20"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2026-03-20"
+                },
+                {
+                  "key": "user_id",
+                  "value": "alice",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Obter resumo agregado:\n- Total de conversas/mensagens\n- Tokens gastos (LLM)\n- Modelos mais usados\n- Usuários mais ativos\n- Taxa de conclusão"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detailed Conversations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/chat/dashboard/detailed?limit=10&offset=0&order_by=created_at",
+              "host": ["{{baseUrl}}"],
+              "path": ["chat", "dashboard", "detailed"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                },
+                {
+                  "key": "order_by",
+                  "value": "created_at"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2026-03-01",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2026-03-20",
+                  "disabled": true
+                },
+                {
+                  "key": "user_id",
+                  "value": "alice",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Obter lista detalhada de conversas com paginação:\n- Dados de cada conversa\n- Contagem de mensagens\n- Tokens utilizados\n- Preview de mensagens"
+          },
+          "response": []
+        },
+        {
+          "name": "Export Dashboard Data (JSON)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/chat/dashboard/export?format=json",
+              "host": ["{{baseUrl}}"],
+              "path": ["chat", "dashboard", "export"],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "json"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2026-03-01",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2026-03-20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Exportar dados completos do dashboard em JSON para análise"
+          },
+          "response": []
+        },
+        {
+          "name": "Export Dashboard Data (CSV)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/chat/dashboard/export?format=csv",
+              "host": ["{{baseUrl}}"],
+              "path": ["chat", "dashboard", "export"],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "csv"
+                }
+              ]
+            },
+            "description": "Exportar dados em CSV para Excel e análise customizada"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health & Status",
+      "description": "Endpoints para verificação de saúde",
+      "item": [
+        {
+          "name": "API Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/../",
+              "host": ["{{baseUrl}}", ".."],
+              "path": [""]
+            },
+            "description": "Verifica se o backend está respondendo"
+          },
+          "response": []
+        },
+        {
+          "name": "API Status with Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["status"]
+            },
+            "description": "Status detalhado da API e dependências"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string",
+      "description": "JWT token (preenchido após login)"
+    },
+    {
+      "key": "temp_id",
+      "value": "",
+      "type": "string",
+      "description": "ID temporário de upload (preenchido após ingest-preview)"
+    },
+    {
+      "key": "document_id",
+      "value": "550e8400-e29b-41d4-a716-446655440000",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "alice",
+      "type": "string"
+    },
+    {
+      "key": "conversation_id",
+      "value": "conv_550e8400-e29b-41d4",
+      "type": "string"
+    }
+  ]
+}

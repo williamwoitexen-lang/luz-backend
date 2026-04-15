@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    # Redis é leve, deixa crescer naturalmente
+  
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    
+    # Carregar variáveis do .env (inclui SQLSERVER_CONNECTION_STRING sensível)
+    env_file:
+      - .env
+    
+    environment:
+      # Environment mode
+      APP_ENV: dev
+      # Local storage configuration (sobrescreve .env se necessário)
+      STORAGE_TYPE: local
+      LOCAL_STORAGE_PATH: /app/storage/documents
+      # Otimizações de memória
+      PYTHONUNBUFFERED: 1
+      # Redis configuration
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    
+    depends_on:
+      redis:
+        condition: service_healthy
+    
+    volumes:
+      # Persist storage across container restarts
+      - ./storage/documents:/app/storage/documents
+      - ./storage/temp:/app/storage/temp
+      - ./db:/app/db
+    
+    # Limites de recursos para 16GB total
+    # Aqui usamos 8GB para docker/API (50% do total)
+    deploy:
+      resources:
+        limits:
+          cpus: '4'           # Máximo 4 cores
+          memory: 8G          # Máximo 8GB RAM
+        reservations:
+          cpus: '2'           # Reserva mínima 2 cores
+          memory: 4G          # Reserva mínima 4GB RAM
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# For Azure deployment with managed storage:
+
+volumes:
+  redis_data:

@@ -1,0 +1,16 @@
+resources:
+  repositories:
+  - repository: luzTemplates
+    type: git
+    name: ELX-LATAM-APP-PEOPLE-CHAT-BOT/ELX-LATAM-LUZ-TEMPLATES
+    ref: refs/heads/main
+
+trigger:
+  branches: [ main ]
+pr:
+  branches: [ main ]
+pool:
+  vmImage: ubuntu-latest
+
+extends:
+  template: pipelines/cicd-backend-prod.yml@luzTemplates

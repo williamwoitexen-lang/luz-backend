@@ -1,0 +1,238 @@
+### API EXAMPLES - People Chatbot Backend
+### Use a extensão "REST Client" no VS Code para executar estes exemplos
+### Clique em "Send Request" acima de cada bloco
+
+@baseUrl = http://localhost:8000/api/v1
+
+### =====================================================
+### AUTHENTICATION (Auth)
+### =====================================================
+
+### 1. Login - Redirecionar para Azure AD
+GET {{baseUrl}}/login
+
+### 2. Check Auth Status
+GET {{baseUrl}}/auth/status
+
+### 3. Get User Role
+GET {{baseUrl}}/me/role
+
+### 4. Logout
+GET {{baseUrl}}/logout
+
+### =====================================================
+### MASTER DATA - LOCATIONS
+### =====================================================
+
+### 1. Get ALL Locations
+GET {{baseUrl}}/master-data/locations
+
+### 2. Get ACTIVE Locations Only
+GET {{baseUrl}}/master-data/locations?active_only=true
+
+### 3. Get Locations from Brazil
+GET {{baseUrl}}/master-data/locations?country_name=Brazil&active_only=true
+
+### 4. Get LATAM Region Locations
+GET {{baseUrl}}/master-data/locations?region=LATAM&active_only=true
+
+### 5. Get All Countries
+GET {{baseUrl}}/master-data/countries
+
+### 6. Get All Regions
+GET {{baseUrl}}/master-data/regions
+
+### 7. Get States from Brazil
+GET {{baseUrl}}/master-data/states-by-country/Brazil?active_only=true
+
+### 8. Get States from Mexico
+GET {{baseUrl}}/master-data/states-by-country/Mexico?active_only=true
+
+### 9. Get Cities from Brazil
+GET {{baseUrl}}/master-data/cities-by-country/Brazil
+
+### 10. Get Cities from Mexico
+GET {{baseUrl}}/master-data/cities-by-country/Mexico
+
+### 11. Get Cities from LATAM Region
+GET {{baseUrl}}/master-data/cities-by-region/LATAM
+
+### 12. Get Cities from NA Region
+GET {{baseUrl}}/master-data/cities-by-region/NA
+
+### 13. Get Complete Location Hierarchy
+GET {{baseUrl}}/master-data/hierarchy
+
+### =====================================================
+### MASTER DATA - ROLES
+### =====================================================
+
+### 1. Get ALL Roles
+GET {{baseUrl}}/master-data/roles
+
+### 2. Get ACTIVE Roles Only
+GET {{baseUrl}}/master-data/roles?active_only=true
+
+### 3. Get Specific Role by ID
+GET {{baseUrl}}/master-data/roles/1
+
+### 4. Get Role ID 2
+GET {{baseUrl}}/master-data/roles/2
+
+### =====================================================
+### MASTER DATA - CATEGORIES
+### =====================================================
+
+### 1. Get ALL Categories
+GET {{baseUrl}}/master-data/categories
+
+### 2. Get ACTIVE Categories Only
+GET {{baseUrl}}/master-data/categories?active_only=true
+
+### 3. Get Specific Category by ID
+GET {{baseUrl}}/master-data/categories/1
+
+### 4. Get Category ID 5
+GET {{baseUrl}}/master-data/categories/5
+
+### =====================================================
+### DOCUMENTS - INGEST
+### =====================================================
+
+### 1. Direct Ingest (Upload + Process Immediately)
+### Replaces {{filePath}} with actual file path
+POST {{baseUrl}}/documents/ingest
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="policy.pdf"
+Content-Type: application/pdf
+
+< ./storage/documents/sample_policy.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="user_id"
+
+user@example.com
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="min_role_level"
+
+5
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="allowed_countries"
+
+Brazil,Mexico
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="allowed_cities"
+
+São Paulo,Rio de Janeiro
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 2. Ingest Preview (Extract Metadata Before Confirming)
+POST {{baseUrl}}/documents/ingest-preview
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="benefits.pdf"
+Content-Type: application/pdf
+
+< ./storage/documents/sample_benefits.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 3. Confirm Ingest After Preview (Replace temp_id with actual ID from preview)
+POST {{baseUrl}}/documents/ingest-confirm/temp_550e8400-e29b-41d4
+Content-Type: application/x-www-form-urlencoded
+
+user_id=user@example.com&min_role_level=3&allowed_countries=Brazil&allowed_cities=São Paulo
+
+### =====================================================
+### DOCUMENTS - MANAGE
+### =====================================================
+
+### 1. List All Versions of a Document
+### Replace document_id with actual UUID
+GET {{baseUrl}}/documents/550e8400-e29b-41d4-a716-446655440000/versions
+
+### 2. Delete Specific Document Version
+### Delete version 1 of document
+DELETE {{baseUrl}}/documents/550e8400-e29b-41d4-a716-446655440000/versions/1
+
+### 3. Delete Entire Document (All Versions)
+### Replace document_id with actual UUID
+DELETE {{baseUrl}}/documents/550e8400-e29b-41d4-a716-446655440000
+
+### =====================================================
+### CURL EXAMPLES (Copy & Paste into Terminal)
+### =====================================================
+
+### Get all active LATAM locations
+# curl -X GET "http://localhost:8000/api/v1/master-data/locations?region=LATAM&active_only=true"
+
+### Get all roles
+# curl -X GET "http://localhost:8000/api/v1/master-data/roles"
+
+### Get all categories
+# curl -X GET "http://localhost:8000/api/v1/master-data/categories"
+
+### Ingest document (replace file path)
+# curl -X POST "http://localhost:8000/api/v1/documents/ingest" \
+#   -F "file=@/path/to/policy.pdf" \
+#   -F "user_id=user@example.com" \
+#   -F "min_role_level=5" \
+#   -F "allowed_countries=Brazil,Mexico"
+
+### =====================================================
+### PYTHON EXAMPLES
+### =====================================================
+
+### GET Locations
+# import requests
+# response = requests.get("http://localhost:8000/api/v1/master-data/locations?active_only=true")
+# locations = response.json()
+# print(f"Found {len(locations)} active locations")
+
+### GET Roles
+# import requests
+# response = requests.get("http://localhost:8000/api/v1/master-data/roles")
+# roles = response.json()
+# for role in roles:
+#     print(f"- {role['role_name']}")
+
+### POST Document Ingest
+# import requests
+# files = {"file": open("policy.pdf", "rb")}
+# data = {
+#     "user_id": "user@example.com",
+#     "min_role_level": 5,
+#     "allowed_countries": "Brazil,Mexico"
+# }
+# response = requests.post("http://localhost:8000/api/v1/documents/ingest", files=files, data=data)
+# result = response.json()
+# print(f"Document ID: {result['document_id']}")
+
+### =====================================================
+### JAVASCRIPT EXAMPLES (Fetch API)
+### =====================================================
+
+### GET Locations
+# fetch("http://localhost:8000/api/v1/master-data/locations?active_only=true")
+#   .then(res => res.json())
+#   .then(data => console.log(`Found ${data.length} locations`))
+
+### GET Roles
+# fetch("http://localhost:8000/api/v1/master-data/roles")
+#   .then(res => res.json())
+#   .then(roles => roles.forEach(r => console.log(r.role_name)))
+
+### POST Document Ingest
+# const formData = new FormData();
+# formData.append("file", fileInput.files[0]);
+# formData.append("user_id", "user@example.com");
+# formData.append("min_role_level", "5");
+# formData.append("allowed_countries", "Brazil,Mexico");
+#
+# fetch("http://localhost:8000/api/v1/documents/ingest", {
+#   method: "POST",
+#   body: formData
+# })
+# .then(res => res.json())
+# .then(data => console.log(`Document ID: ${data.document_id}`))
